@@ -1,0 +1,50 @@
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/groupText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group Name" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/userText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username" />
+
+        <Button
+            android:id="@+id/joinButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="joinGroup"
+            android:text="Join" />
+
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="startGame"
+            android:text="Start" />
+
+    </LinearLayout>
+    
+    <ListView
+        android:id="@+id/playerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4" >
+
+    </ListView>
+
+</LinearLayout>

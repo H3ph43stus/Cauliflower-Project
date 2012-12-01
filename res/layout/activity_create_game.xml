@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/newGroupText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group Name" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/leaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/createButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="createGame"
+            android:text="Create" />
+
+    </LinearLayout>
+
+    <com.google.android.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapview"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="4"
+        android:apiKey="0qg8bF5tzVcxljl3DNTpl5RxNLgfFbIBDMFtLQA"
+        android:clickable="true" />
+
+</LinearLayout>
