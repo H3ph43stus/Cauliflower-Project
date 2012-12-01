@@ -32,6 +32,8 @@ import com.google.gson.JsonParser;
 
 public class MainActivity extends Activity {
 
+	// Hello World
+	
 	ListView userList;
 	String webserviceURL = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/";
 	ArrayList<PlayerStatus> values;
