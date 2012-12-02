@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,12 +27,18 @@ public class GameInstance {
 	String username;
 	ArrayList<GameInfo> values;
 	int score;
+	boolean isDead;
+	Date olderDate;
+	long time;
 	
 	public GameInstance(String groupName, String username) {
 		this.groupName = groupName;
 		this.username = username;
 		values = new ArrayList<GameInfo>();
 		score = 0;
+		isDead = false;
+		olderDate = new Date();
+		time = 0;
 	}
 	
 	public void update() {
@@ -54,6 +61,19 @@ public class GameInstance {
 		score++;
 		String url = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/update/"
 				+groupName+"/"+username+"/"+score+"/1";
+		new GetStatusesTask().execute(url,"false");
+	}
+	
+	public void calcTime() {
+		Date newerDate = new Date();
+		time = (newerDate.getTime() - olderDate.getTime()) 
+                / (1000);// * 60 * 60 * 24)
+	}
+	
+	public void hasDied() {
+		isDead = true;
+		String url = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/update/"
+				+groupName+"/"+username+"/"+score+"/0";
 		new GetStatusesTask().execute(url,"false");
 	}
 	
