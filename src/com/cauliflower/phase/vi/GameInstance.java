@@ -30,6 +30,7 @@ public class GameInstance {
 	boolean isDead;
 	Date olderDate;
 	long time;
+	int monsterX, monsterY;
 	
 	public GameInstance(String groupName, String username) {
 		this.groupName = groupName;
@@ -39,6 +40,8 @@ public class GameInstance {
 		isDead = false;
 		olderDate = new Date();
 		time = 0;
+		monsterX = 0;
+		monsterY = 0;
 	}
 	
 	public void update() {
@@ -170,5 +173,21 @@ public class GameInstance {
 
 
 		return result;
+	}
+
+	public int getMonsterX() {
+		return monsterX;
+	}
+
+	public void setMonsterX(int monsterX) {
+		this.monsterX = monsterX;
+	}
+
+	public int getMonsterY() {
+		return monsterY;
+	}
+
+	public void setMonsterY(int monsterY) {
+		this.monsterY = monsterY;
 	}
 }
