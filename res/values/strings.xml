@@ -9,5 +9,6 @@
     <string name="title_activity_create_game">Create Game</string>
     <string name="title_activity_manage_game">Manage Game</string>
     <string name="title_activity_twitter_test">MainActivity</string>
+    <string name="title_activity_game">GameActivity</string>
 
 </resources>
