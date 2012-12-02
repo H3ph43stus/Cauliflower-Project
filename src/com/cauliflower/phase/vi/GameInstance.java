@@ -24,11 +24,14 @@ public class GameInstance {
 	String webserviceURL = "http://cauliflowerpowershower.appspot.com/";
 	String groupName; 
 	String username;
-	ArrayList<GameInfo> values = new ArrayList<GameInfo>();
+	ArrayList<GameInfo> values;
+	int score;
 	
 	public GameInstance(String groupName, String username) {
 		this.groupName = groupName;
 		this.username = username;
+		values = new ArrayList<GameInfo>();
+		score = 0;
 	}
 	
 	public void update() {
@@ -45,6 +48,13 @@ public class GameInstance {
 	public float[] loadYValues() {
 		float[] myValues = ((GameInfo) values.get(0)).getyLocations();
 		return myValues;
+	}
+	
+	public void pointFound() {
+		score++;
+		String url = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/update/"
+				+groupName+"/"+username+"/"+score+"/1";
+		new GetStatusesTask().execute(url,"false");
 	}
 	
 	public boolean isReady() {
