@@ -1,6 +1,15 @@
 package com.cauliflower.phase.vi;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.cauliflower.phase.vi.R;
 import com.example.overlaymanager.ManagedOverlay;
@@ -12,10 +21,15 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -26,6 +40,8 @@ import android.support.v4.app.NavUtils;
 public class CreateGame extends MapActivity {
 	MyLocationOverlay myLocation;
 	OverlayManager overlayManager;
+	String webserviceURL = "http://cauliflowerpowershower.appspot.com/";
+	ArrayList<GameInfo> values;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,11 +101,12 @@ public class CreateGame extends MapActivity {
     }
     
     public void createGame(View view){
-    	Intent intent = new Intent(this, ManageGame.class);
+    	//Intent intent = new Intent(this, ManageGame.class);
     	EditText groupText = (EditText) findViewById(R.id.newGroupText);
-    	EditText leaderText = (EditText) findViewById(R.id.leaderText);
-    	intent.putExtra("groupName", groupText.getText().toString());
-    	intent.putExtra("username", leaderText.getText().toString());
+    	//EditText leaderText = (EditText) findViewById(R.id.leaderText);
+    	//intent.putExtra("groupName", groupText.getText().toString());
+    	//intent.putExtra("username", leaderText.getText().toString());
+    	String group = groupText.getText().toString();
     	ManagedOverlay overlay = overlayManager.getOverlay(0);
     	ArrayList<Integer> xCords = new ArrayList<Integer>();
     	ArrayList<Integer> yCords = new ArrayList<Integer>();
@@ -99,9 +116,33 @@ public class CreateGame extends MapActivity {
     		xCords.add(point1.getLatitudeE6());
     		yCords.add(point1.getLongitudeE6());
     	}
-    	intent.putExtra("xCords", xCords);
+    	/*intent.putExtra("xCords", xCords);
     	intent.putExtra("yCords", yCords);
     	startActivity(intent);
+    	
+		Bundle data = getIntent().getExtras();
+		String group = data.getString("groupName");*/
+		values = new ArrayList<GameInfo>();
+		String url = "";
+		for(int i=0; i<xCords.size(); i++) {
+			url = webserviceURL + "add2/" + group + "/" + yCords.get(i) + "/" + xCords.get(i);
+			if(i != (xCords.size() - 1)) {
+				new GetStatusesTask().execute(url,"false");
+			} else {
+				new GetStatusesTask().execute(url,"true");
+			}
+		}
+		
+		MapView mapView = (MapView) findViewById(R.id.mapview2);
+		mapView.setBuiltInZoomControls(true);
+		mapView.setSatellite(true);
+
+		overlayManager = new OverlayManager(this, mapView);
+
+		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_action_locate);
+		ManagedOverlay.boundToCenter(drawable);
+				
+		overlayManager.createOverlay(drawable);
     }
     
     @Override
@@ -139,4 +180,96 @@ public class CreateGame extends MapActivity {
 		return false;
 	}
 
+	// The definition of our task class
+		private class GetStatusesTask extends AsyncTask<String, Integer, String> {
+			@Override
+			protected void onPreExecute() {
+			}
+
+			@Override
+			protected String doInBackground(String... params) {
+				String url = params[0];
+				String update = params[1];
+				ArrayList<GameInfo> lcs = new ArrayList<GameInfo>();
+
+				try {
+
+					Log.d("URL",url);
+					String webJSON = getJSONfromURL(url);
+					Log.d("JSON", webJSON);
+					if(update.equals("true")){
+						Gson gson = new Gson();
+
+						JsonParser parser = new JsonParser();
+						JsonArray Jarray = parser.parse(webJSON).getAsJsonArray();
+
+						for (JsonElement obj : Jarray) {
+							GameInfo st = gson.fromJson(obj, GameInfo.class);
+							lcs.add(st);
+						}
+					}
+
+				} catch (Exception e) {
+					Log.e("Cauliflower", "JSONPARSE:" + e.toString());
+				}
+
+				values.clear();
+				values.addAll(lcs);
+
+				return "Done!";
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... ints) {
+
+			}
+
+			@Override
+			protected void onPostExecute(String result) {
+				//updatePoints();
+			}
+		}
+
+		/*@Override
+		protected boolean isRouteDisplayed() {
+			return false;
+		}*/
+
+		public static String getJSONfromURL(String url) {
+
+			// initialize
+			InputStream is = null;
+			String result = "";
+
+			// http post
+			try {
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpGet httpget = new HttpGet(url);
+				HttpResponse response = httpclient.execute(httpget);
+				HttpEntity entity = response.getEntity();
+				is = entity.getContent();
+
+			} catch (Exception e) {
+				Log.e("Cauliflower", "Error in http connection " + e.toString());
+			}
+
+			// convert response to string
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						is, "iso-8859-1"), 8);
+				StringBuilder sb = new StringBuilder();
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					sb.append(line + "\n");
+				}
+				is.close();
+				result = sb.toString();
+			} catch (Exception e) {
+				Log.e("Cauliflower", "Error converting result " + e.toString());
+			}
+
+
+			return result;
+		}
 }
+
