@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.cauliflower.phase.vi.PictureSurfaceView
-        android:id="@+id/pictureSurfaceView1"
+    <android.view.SurfaceView
+        android:id="@+id/surfaceView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
-
-    <android.view.SurfaceView
-        android:id="@+id/surfaceView1"
+    
+    <com.cauliflower.phase.vi.PictureSurfaceView
+        android:id="@+id/pictureSurfaceView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"

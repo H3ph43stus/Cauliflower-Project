@@ -8,9 +8,9 @@ import android.util.AttributeSet;
 public class PictureSurfaceView extends GLSurfaceView { 
 	public GlRenderer r;
 
-	public PictureSurfaceView(Context context) {       
+	public PictureSurfaceView(Context context, int monsterX, int monsterY) {       
 		super(context); 
-		r = new GlRenderer(context);
+		r = new GlRenderer(context,monsterX,monsterY);
 		this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		this.setRenderer(r);
 		this.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);  
@@ -18,14 +18,14 @@ public class PictureSurfaceView extends GLSurfaceView {
 
 	}  
 	
-	public PictureSurfaceView(Context context, AttributeSet attrs) {       
-		super(context,attrs); 
-		r = new GlRenderer(context);
-		this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		this.setRenderer(r);
-		this.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);  
-		this.getHolder().setFormat(PixelFormat.TRANSPARENT);
-
-	}  
+//	public PictureSurfaceView(Context context, AttributeSet attrs) {       
+//		super(context,attrs); 
+//		r = new GlRenderer(context);
+//		this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//		this.setRenderer(r);
+//		this.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);  
+//		this.getHolder().setFormat(PixelFormat.TRANSPARENT);
+//
+//	}  
 
 }

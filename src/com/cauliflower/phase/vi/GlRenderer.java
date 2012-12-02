@@ -8,8 +8,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.opengl.GLU;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Bundle;
 import android.util.Log;
 
 public class GlRenderer implements Renderer,SensorEventListener {
@@ -25,10 +29,50 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	private float ydifmax = 15;
 	float alpha = (float) 0.9;
 	
+	int D2mD = 1000000;
+	int currentX = 0;
+	int currentY = 0;
+	private int mX;
+	private int mY;
+	private float mDist = 0;
+	private float mDeg = 0;
+	
+	LocationManager locationManager;
+	LocationListener locationListener = new LocationListener(){
+
+		public void onLocationChanged(Location arg0) {
+			// TODO Auto-generated method stub
+			currentX = (int)(arg0.getLongitude() * D2mD);
+			currentY = (int)(arg0.getLatitude() * D2mD);
+			float xdif = mX - currentX;
+			float ydif = mY - currentY;
+			mDeg = (float) Math.toDegrees(Math.atan(ydif/xdif)) + 90;
+			mDist = (float) Math.sqrt(xdif*xdif + ydif*ydif);
+			Log.d("location","Deg: " + mDeg + " dist: " + mDist);
+			Log.d("dif","xdif: " + xdif + " ydif: " + ydif);
+		}
+
+		public void onProviderDisabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
+	
 	
 	/** Constructor to set the handed over context */
 	@SuppressWarnings("deprecation")
-	public GlRenderer(Context context) {
+	public GlRenderer(Context context, int monsterX, int monsterY) {
 		this.context = context;
 		
 		// initialise the square
@@ -39,6 +83,12 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		values[0] = 0;
 		values[1] = 0;
 		values[2] = 0;
+		
+		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		
+		mX = monsterX;
+		mY = monsterY;
 	}
 
 	public void onDrawFrame(GL10 gl) {
@@ -48,12 +98,12 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		// Reset the Modelview Matrix
 		gl.glLoadIdentity();
 
-		float xdif = xdeg - values[0];
+		float xdif = mDeg - values[0];
 		float ydif = ydeg - values[1];
 		float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
 		float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
 		float zscale = values[2]/30;
-		Log.d("draw","Draw at: " + xscale + " " + yscale);
+//		Log.d("draw","Draw at: " + xscale + " " + yscale);
 //		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
 //			return;
 		// Drawing
@@ -112,7 +162,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	}
 
 	public void onSensorChanged(SensorEvent event) {
-		Log.d("sensor", "Getting values: " + (int)event.values[0] + "," + (int)event.values[1]);
+//		Log.d("sensor", "Getting values: " + (int)event.values[0] + "," + (int)event.values[1]);
 		values[0] = (1-alpha)*event.values[0] + alpha*values[0];
 		values[1] = (1-alpha)*event.values[1] + alpha*values[1];
 		values[2] = (1-alpha)*event.values[2] + alpha*values[2];

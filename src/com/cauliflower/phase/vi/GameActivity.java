@@ -2,6 +2,8 @@ package com.cauliflower.phase.vi;
 
 import java.io.IOException;
 
+import com.google.android.maps.GeoPoint;
+
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -15,9 +17,12 @@ import android.view.WindowManager;
 public class GameActivity extends Activity implements SurfaceHolder.Callback{
 	private Camera camera;
 	private SurfaceView mSurfaceView;
-	SurfaceHolder mSurfaceHolder;
-
+	private SurfaceHolder mSurfaceHolder;
 	private PictureSurfaceView mGLSurfaceView;
+	
+	private GeoPoint monsterLoc = new GeoPoint(-78498878,38040464);
+	private int monsterX = -78498878;
+	private int monsterY = 38040464;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -31,7 +36,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mSurfaceView = new SurfaceView(this);
 		addContentView(mSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
-		mGLSurfaceView = new PictureSurfaceView(this); 
+		mGLSurfaceView = new PictureSurfaceView(this, monsterX, monsterY); 
 		addContentView(mGLSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
 //		setContentView(R.layout.activity_main);

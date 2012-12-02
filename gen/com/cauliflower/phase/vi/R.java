@@ -50,12 +50,12 @@ public final class R {
         public static final int mapview2=0x7f07000d;
         public static final int menu_settings=0x7f070011;
         public static final int newGroupText=0x7f070001;
-        public static final int pictureSurfaceView1=0x7f070006;
+        public static final int pictureSurfaceView1=0x7f070007;
         public static final int playerView=0x7f07000c;
         public static final int refreshButton=0x7f070012;
         public static final int refreshTweets=0x7f070013;
         public static final int startButton=0x7f07000b;
-        public static final int surfaceView1=0x7f070007;
+        public static final int surfaceView1=0x7f070006;
         public static final int tweetListView=0x7f070010;
         public static final int userText=0x7f070009;
     }
