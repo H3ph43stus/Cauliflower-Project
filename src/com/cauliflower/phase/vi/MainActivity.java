@@ -32,7 +32,7 @@ import com.google.gson.JsonParser;
 
 public class MainActivity extends Activity {
 
-	// Hello World
+	// Hello World Again
 	
 	ListView userList;
 	String webserviceURL = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/";
