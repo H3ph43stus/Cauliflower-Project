@@ -1,5 +1,7 @@
 package com.cauliflower.phase.vi;
 
+import java.util.ArrayList;
+
 import com.cauliflower.phase.vi.R;
 import com.example.overlaymanager.ManagedOverlay;
 import com.example.overlaymanager.ManagedOverlayGestureDetector;
@@ -89,12 +91,16 @@ public class CreateGame extends MapActivity {
     	intent.putExtra("groupName", groupText.getText().toString());
     	intent.putExtra("username", leaderText.getText().toString());
     	ManagedOverlay overlay = overlayManager.getOverlay(0);
-    	if(overlay.size() < 2)
-    		return;
-    	GeoPoint point1 = overlay.getItem(0).getPoint();
-    	GeoPoint point2 = overlay.getItem(1).getPoint();
-    	String boundary = point1.getLatitudeE6() + "/" + point2.getLatitudeE6() + "/" + point1.getLongitudeE6() + "/" + point2.getLongitudeE6();
-    	intent.putExtra("boundary", boundary);
+    	ArrayList<Integer> xCords = new ArrayList<Integer>();
+    	ArrayList<Integer> yCords = new ArrayList<Integer>();
+    	
+    	for(int i=0; i<overlay.size(); i++) {
+    		GeoPoint point1 = overlay.getItem(i).getPoint();
+    		xCords.add(point1.getLatitudeE6());
+    		yCords.add(point1.getLongitudeE6());
+    	}
+    	intent.putExtra("xCords", xCords);
+    	intent.putExtra("yCords", yCords);
     	startActivity(intent);
     }
     

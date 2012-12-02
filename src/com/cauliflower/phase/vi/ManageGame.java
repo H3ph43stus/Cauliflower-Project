@@ -47,11 +47,18 @@ public class ManageGame extends MapActivity {
 		values = new ArrayList<GameInfo>();
 		Bundle data = getIntent().getExtras();
 		String group = data.getString("groupName");
-		String boundary = data.getString("boundary");
+		ArrayList<Integer> xCords = data.getIntegerArrayList("xCords");
+		ArrayList<Integer> yCords = data.getIntegerArrayList("yCords");
 
-		String url = webserviceURL + "add/" + group + "/" + boundary;
-
-		new GetStatusesTask().execute(url,"true");
+		String url = "";
+		for(int i=0; i<xCords.size(); i++) {
+			url = webserviceURL + "add2/" + group + "/" + yCords.get(i) + "/" + xCords.get(i);
+			if(i != (xCords.size() - 1)) {
+				new GetStatusesTask().execute(url,"false");
+			} else {
+				new GetStatusesTask().execute(url,"true");
+			}
+		}
 		
 		MapView mapView = (MapView) findViewById(R.id.mapview2);
 		mapView.setBuiltInZoomControls(true);
