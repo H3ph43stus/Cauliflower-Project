@@ -26,6 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -101,11 +102,11 @@ public class CreateGame extends MapActivity {
     }
     
     public void createGame(View view){
-    	//Intent intent = new Intent(this, ManageGame.class);
+    	Intent intent = new Intent(this, GameActivity.class);
     	EditText groupText = (EditText) findViewById(R.id.newGroupText);
-    	//EditText leaderText = (EditText) findViewById(R.id.leaderText);
-    	//intent.putExtra("groupName", groupText.getText().toString());
-    	//intent.putExtra("username", leaderText.getText().toString());
+    	EditText leaderText = (EditText) findViewById(R.id.leaderText);
+    	intent.putExtra("groupName", groupText.getText().toString());
+    	intent.putExtra("username", leaderText.getText().toString());
     	String group = groupText.getText().toString();
     	ManagedOverlay overlay = overlayManager.getOverlay(0);
     	ArrayList<Integer> xCords = new ArrayList<Integer>();
@@ -116,6 +117,7 @@ public class CreateGame extends MapActivity {
     		xCords.add(point1.getLatitudeE6());
     		yCords.add(point1.getLongitudeE6());
     	}
+    	startActivity(intent);
     	/*intent.putExtra("xCords", xCords);
     	intent.putExtra("yCords", yCords);
     	startActivity(intent);

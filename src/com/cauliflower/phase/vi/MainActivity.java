@@ -97,6 +97,10 @@ public class MainActivity extends Activity {
 //			Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
 //		}
 		Intent intent = new Intent(this, GameActivity.class);
+    	EditText groupText = (EditText) findViewById(R.id.groupText);
+    	EditText userText = (EditText) findViewById(R.id.userText);
+    	intent.putExtra("groupName", groupText.getText().toString());
+    	intent.putExtra("username", userText.getText().toString());
 		startActivity(intent);
 	}
 
