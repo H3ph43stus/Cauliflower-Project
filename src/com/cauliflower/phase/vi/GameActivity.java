@@ -23,6 +23,8 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 	private GeoPoint monsterLoc = new GeoPoint(-78498878,38040464);
 	private int monsterX = -78498800;
 	private int monsterY = 38040420;
+	
+	private GameInstance game;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -36,7 +38,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mSurfaceView = new SurfaceView(this);
 		addContentView(mSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
-		mGLSurfaceView = new PictureSurfaceView(this, monsterX, monsterY); 
+		mGLSurfaceView = new PictureSurfaceView(this, game); 
 		addContentView(mGLSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
 //		setContentView(R.layout.activity_main);
@@ -47,6 +49,11 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mSurfaceHolder.addCallback(this);
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT); 
+		
+		Bundle data = getIntent().getExtras();
+		String username = data.getString("username");
+		String group = data.getString("group");
+		game = new GameInstance(group,username);
 	}
 
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {

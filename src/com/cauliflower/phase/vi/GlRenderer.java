@@ -23,7 +23,6 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private float values[] = new float[3];
-	private float xdeg = 120;
 	private float ydeg = -80;
 	private float xdifmax = 10;
 	private float ydifmax = 10;
@@ -32,6 +31,12 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	int D2mD = 1000000;
 	int currentX = 0;
 	int currentY = 0;
+	GameInstance game;
+
+	private boolean noPoints = true;
+	private float xvals[];
+	private float yvals[];
+
 	private int mX;
 	private int mY;
 	private float mDist = 0;
@@ -44,18 +49,6 @@ public class GlRenderer implements Renderer,SensorEventListener {
 			// TODO Auto-generated method stub
 			currentX = (int)(arg0.getLongitude() * D2mD);
 			currentY = (int)(arg0.getLatitude() * D2mD);
-			float xdif = mX - currentX;
-			float ydif = mY - currentY;
-			mDeg = (float) Math.toDegrees(Math.atan(ydif/xdif));
-			if(xdif > 0){
-				mDeg = 90 - mDeg;
-			}
-			else{
-				mDeg = 270 - mDeg;
-			}
-			mDist = (float) Math.sqrt(xdif*xdif + ydif*ydif);
-			Log.d("location","Deg: " + mDeg + " dist: " + mDist);
-			Log.d("dif","xdif: " + xdif + " ydif: " + ydif);
 		}
 
 		public void onProviderDisabled(String provider) {
@@ -78,7 +71,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 
 	/** Constructor to set the handed over context */
 	@SuppressWarnings("deprecation")
-	public GlRenderer(Context context, int monsterX, int monsterY) {
+	public GlRenderer(Context context, GameInstance game) {
 		this.context = context;
 
 		// initialise the square
@@ -93,8 +86,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-		mX = monsterX;
-		mY = monsterY;
+		this.game = game;
 	}
 
 	public void onDrawFrame(GL10 gl) {
@@ -104,24 +96,44 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		// Reset the Modelview Matrix
 		gl.glLoadIdentity();
 
-		float xdif = mDeg - values[0];
-		float ydif = ydeg - values[1];
-		float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
-		float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
-		float zscale = -(mDist*mDist)/2000;
-		//		Log.d("draw","Draw at: " + xscale + " " + yscale);
-		//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
-		//			return;
-		// Drawing
-		gl.glTranslatef(xscale, yscale, zscale);		// move 5 units INTO the screen
-		// is the same as moving the camera 5 units away
-		//		gl.glScalef(0.5f, 0.5f, 0.5f);			// scale the square to 50% 
-		// otherwise it will be too large
-		square.draw(gl);						// Draw the triangle
+		if(noPoints){
+			if(game.isReady()){
+				xvals = game.loadXValues();
+				yvals = game.loadYValues();
+				noPoints = false;
+			}
+		}
+		else{
+			for(int i = 0; i < xvals.length; i++){
+				float longdif = xvals[i] - currentX;
+				float latdif = yvals[i] - currentY;
+				float deg = (float) Math.toDegrees(Math.atan(latdif/longdif));
+				if(longdif > 0){
+					deg = 90 - deg;
+				}
+				else{
+					deg = 270 - deg;
+				}
+				mDist = (float) Math.sqrt(longdif*longdif + latdif*latdif);
+				Log.d("location","Deg: " + deg + " dist: " + mDist);
+				Log.d("dif","longdif: " + longdif + " latdif: " + latdif);
 
-		//		gl.glTranslatef(2f, 0f, 0f);
-
-		//		square.draw(gl);
+				float xdif = deg - values[0];
+				float ydif = ydeg - values[1];
+				float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
+				float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
+				float zscale = -(mDist*mDist)/2000;
+				//		Log.d("draw","Draw at: " + xscale + " " + yscale);
+				//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
+				//			return;
+				// Drawing
+				gl.glTranslatef(xscale, yscale, zscale);		// move 5 units INTO the screen
+				// is the same as moving the camera 5 units away
+				//		gl.glScalef(0.5f, 0.5f, 0.5f);			// scale the square to 50% 
+				// otherwise it will be too large
+				square.draw(gl);						// Draw the triangle
+			}
+		}
 
 	}
 
@@ -159,6 +171,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	}
 
 	public void onClose(){
+		locationManager.removeUpdates(locationListener);
 		mSensorManager.unregisterListener(this);
 	}
 
