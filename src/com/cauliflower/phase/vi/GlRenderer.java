@@ -24,7 +24,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	private Sensor mSensor;
 	private float values[] = new float[3];
 	private float ydeg = -80;
-	private float xdifmax = 10;
+	private float xdifmax = 20;
 	private float ydifmax = 10;
 	float alpha = (float) 0.9;
 
@@ -39,8 +39,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 
 	private int mX;
 	private int mY;
-	private float mDist = 0;
-	private float mDeg = 0;
+	
 
 	LocationManager locationManager;
 	LocationListener locationListener = new LocationListener(){
@@ -101,6 +100,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 				xvals = game.loadXValues();
 				yvals = game.loadYValues();
 				noPoints = false;
+				Log.d("points","Got points");
 			}
 		}
 		else{
@@ -114,16 +114,16 @@ public class GlRenderer implements Renderer,SensorEventListener {
 				else{
 					deg = 270 - deg;
 				}
-				mDist = (float) Math.sqrt(longdif*longdif + latdif*latdif);
-				Log.d("location","Deg: " + deg + " dist: " + mDist);
-				Log.d("dif","longdif: " + longdif + " latdif: " + latdif);
+				float mDist = (float) Math.sqrt(longdif*longdif + latdif*latdif);
+//				Log.d("location",i + " Deg: " + deg + " dist: " + mDist);
+//				Log.d("dif","longdif " + i + ": " + longdif + " latdif: " + latdif);
 
 				float xdif = deg - values[0];
 				float ydif = ydeg - values[1];
 				float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
 				float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
-				float zscale = -(mDist*mDist)/2000;
-				//		Log.d("draw","Draw at: " + xscale + " " + yscale);
+				float zscale = -5;//-(mDist*mDist)/2000;
+				Log.d("draw","Draw at: " + xscale + " " + yscale);
 				//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
 				//			return;
 				// Drawing
@@ -131,7 +131,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 				// is the same as moving the camera 5 units away
 				//		gl.glScalef(0.5f, 0.5f, 0.5f);			// scale the square to 50% 
 				// otherwise it will be too large
-				square.draw(gl);						// Draw the triangle
+				square.draw(gl);
 			}
 		}
 

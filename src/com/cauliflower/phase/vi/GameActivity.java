@@ -30,6 +30,12 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Bundle data = getIntent().getExtras();
+		String username = data.getString("username");
+		String group = data.getString("groupName");
+		game = new GameInstance(group,username);
+		game.update();
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -49,11 +55,6 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mSurfaceHolder.addCallback(this);
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT); 
-		
-		Bundle data = getIntent().getExtras();
-		String username = data.getString("username");
-		String group = data.getString("group");
-		game = new GameInstance(group,username);
 	}
 
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {

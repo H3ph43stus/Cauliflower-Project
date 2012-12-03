@@ -47,7 +47,6 @@ public class GameInstance {
 	public void update() {
 		String url = webserviceURL + "view/" + groupName;
 		new GetStatusesTask().execute(url,"true");
-		hasValues=true;
 	}
 	
 	public float[] loadXValues() {
@@ -118,7 +117,7 @@ public class GameInstance {
 
 			values.clear();
 			values.addAll(lcs);
-
+			hasValues=true;
 			return "Done!";
 		}
 
