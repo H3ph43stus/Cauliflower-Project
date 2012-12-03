@@ -18,8 +18,9 @@ import android.util.Log;
 
 public class GlRenderer implements Renderer,SensorEventListener {
 
-	private Square 		square;		// the square
-	private Context 	context;
+	private Square itemSquare;		// the square
+	private Square monsterSquare;
+	private Context context;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private float values[] = new float[3];
@@ -74,7 +75,8 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		this.context = context;
 
 		// initialise the square
-		this.square = new Square();
+		this.itemSquare = new Square(R.drawable.burr);
+		this.monsterSquare = new Square(R.drawable.slendie);
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
@@ -122,18 +124,17 @@ public class GlRenderer implements Renderer,SensorEventListener {
 				float ydif = ydeg - values[1];
 				float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
 				float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
-				float zscale = -5;//-(mDist*mDist)/2000;
+				float zscale = 300/mDist;//-(mDist*mDist)/2000;
 				Log.d("draw","Draw at: " + xscale + " " + yscale);
 				//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
 				//			return;
 				// Drawing
-				gl.glTranslatef(xscale, yscale, zscale);		// move 5 units INTO the screen
-				// is the same as moving the camera 5 units away
-				//		gl.glScalef(0.5f, 0.5f, 0.5f);			// scale the square to 50% 
-				// otherwise it will be too large
-				square.draw(gl);
+				gl.glTranslatef(xscale, yscale, -5);		
+				gl.glScalef(zscale, zscale, zscale);			
+				itemSquare.draw(gl);
 			}
 		}
+		
 
 	}
 
@@ -155,7 +156,8 @@ public class GlRenderer implements Renderer,SensorEventListener {
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// Load the texture for the square
-		square.loadGLTexture(gl, this.context);
+		itemSquare.loadGLTexture(gl, this.context);
+		monsterSquare.loadGLTexture(gl, this.context);
 
 		gl.glEnable(GL10.GL_TEXTURE_2D);			//Enable Texture Mapping ( NEW )
 		gl.glShadeModel(GL10.GL_SMOOTH); 			//Enable Smooth Shading

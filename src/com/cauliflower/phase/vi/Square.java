@@ -32,8 +32,10 @@ public class Square {
 	
 	/** The texture pointer */
 	private int[] textures = new int[1];
+	private int r;
 
-	public Square() {
+	public Square(int Resource) {
+		r = Resource;
 		// a float has 4 bytes so we allocate for each coordinate 4 bytes
 		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
 		byteBuffer.order(ByteOrder.nativeOrder());
@@ -56,8 +58,7 @@ public class Square {
 
 	public void loadGLTexture(GL10 gl, Context context) {
 		// loading texture
-		Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.android);
+		Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),r);
 
 		// generate one texture pointer
 		gl.glGenTextures(1, textures, 0);

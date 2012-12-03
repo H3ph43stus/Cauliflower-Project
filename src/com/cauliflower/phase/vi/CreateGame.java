@@ -117,7 +117,6 @@ public class CreateGame extends MapActivity {
     		xCords.add(point1.getLatitudeE6());
     		yCords.add(point1.getLongitudeE6());
     	}
-    	startActivity(intent);
     	/*intent.putExtra("xCords", xCords);
     	intent.putExtra("yCords", yCords);
     	startActivity(intent);
@@ -128,23 +127,26 @@ public class CreateGame extends MapActivity {
 		String url = "";
 		for(int i=0; i<xCords.size(); i++) {
 			url = webserviceURL + "add2/" + group + "/" + yCords.get(i) + "/" + xCords.get(i);
-			if(i != (xCords.size() - 1)) {
-				new GetStatusesTask().execute(url,"false");
-			} else {
-				new GetStatusesTask().execute(url,"true");
-			}
+//			if(i != (xCords.size() - 1)) {
+//				new GetStatusesTask().execute(url,"false");
+//			} else {
+//				new GetStatusesTask().execute(url,"true");
+//			}
+			new GetStatusesTask().execute(url,"false");
 		}
 		
-		MapView mapView = (MapView) findViewById(R.id.mapview2);
-		mapView.setBuiltInZoomControls(true);
-		mapView.setSatellite(true);
-
-		overlayManager = new OverlayManager(this, mapView);
-
-		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_action_locate);
-		ManagedOverlay.boundToCenter(drawable);
+		startActivity(intent);
+		
+//		MapView mapView = (MapView) findViewById(R.id.mapview2);
+//		mapView.setBuiltInZoomControls(true);
+//		mapView.setSatellite(true);
+//
+//		overlayManager = new OverlayManager(this, mapView);
+//
+//		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_action_locate);
+//		ManagedOverlay.boundToCenter(drawable);
 				
-		overlayManager.createOverlay(drawable);
+//		overlayManager.createOverlay(drawable);
     }
     
     @Override
