@@ -21,8 +21,8 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 	private PictureSurfaceView mGLSurfaceView;
 	
 	private GeoPoint monsterLoc = new GeoPoint(-78498878,38040464);
-	private int monsterX = -78498878;
-	private int monsterY = 38040464;
+	private int monsterX = -78498800;
+	private int monsterY = 38040420;
 
 	@SuppressWarnings("deprecation")
 	@Override
