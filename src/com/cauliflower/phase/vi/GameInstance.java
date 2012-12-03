@@ -30,7 +30,9 @@ public class GameInstance {
 	boolean isDead;
 	Date olderDate;
 	long time;
-	int monsterX, monsterY;
+	int monsterX = 0, monsterY = 0;
+	
+	MonsterThread monster = new MonsterThread(this);
 	
 	public GameInstance(String groupName, String username) {
 		this.groupName = groupName;
@@ -42,6 +44,8 @@ public class GameInstance {
 		time = 0;
 		monsterX = 0;
 		monsterY = 0;
+		
+		monster.start();
 	}
 	
 	public void update() {
@@ -188,5 +192,16 @@ public class GameInstance {
 
 	public void setMonsterY(int monsterY) {
 		this.monsterY = monsterY;
+	}
+	
+	private class MonsterThread extends Thread{
+		GameInstance game;
+		MonsterThread(GameInstance game){
+			this.game = game;
+		}
+		
+		public void run(){
+			
+		}
 	}
 }

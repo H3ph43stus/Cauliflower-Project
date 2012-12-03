@@ -135,6 +135,34 @@ public class GlRenderer implements Renderer,SensorEventListener {
 			}
 		}
 		
+		mX = game.getMonsterX();
+		mY = game.getMonsterY();
+		float longdif = mX - currentX;
+		float latdif = mY - currentY;
+		float deg = (float) Math.toDegrees(Math.atan(latdif/longdif));
+		if(longdif > 0){
+			deg = 90 - deg;
+		}
+		else{
+			deg = 270 - deg;
+		}
+		float mDist = (float) Math.sqrt(longdif*longdif + latdif*latdif);
+//		Log.d("location",i + " Deg: " + deg + " dist: " + mDist);
+//		Log.d("dif","longdif " + i + ": " + longdif + " latdif: " + latdif);
+
+		float xdif = deg - values[0];
+		float ydif = ydeg - values[1];
+		float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
+		float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
+		float zscale = 300/mDist;//-(mDist*mDist)/2000;
+		Log.d("draw","Draw at: " + xscale + " " + yscale);
+		//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
+		//			return;
+		// Drawing
+		gl.glTranslatef(xscale, yscale, -5);		
+		gl.glScalef(zscale, zscale, zscale);			
+		monsterSquare.draw(gl);
+		
 
 	}
 
