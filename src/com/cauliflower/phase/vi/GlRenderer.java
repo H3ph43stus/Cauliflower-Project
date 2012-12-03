@@ -124,7 +124,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 				float ydif = ydeg - values[1];
 				float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
 				float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
-				float zscale = 300/mDist;//-(mDist*mDist)/2000;
+				float zscale = 100/mDist;//-(mDist*mDist)/2000;
 				Log.d("draw","Draw at: " + xscale + " " + yscale);
 				//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
 				//			return;

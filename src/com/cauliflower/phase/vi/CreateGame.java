@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
 public class CreateGame extends MapActivity {
@@ -102,51 +103,56 @@ public class CreateGame extends MapActivity {
     }
     
     public void createGame(View view){
-    	Intent intent = new Intent(this, GameActivity.class);
     	EditText groupText = (EditText) findViewById(R.id.newGroupText);
     	EditText leaderText = (EditText) findViewById(R.id.leaderText);
-    	intent.putExtra("groupName", groupText.getText().toString());
-    	intent.putExtra("username", leaderText.getText().toString());
     	String group = groupText.getText().toString();
-    	ManagedOverlay overlay = overlayManager.getOverlay(0);
-    	ArrayList<Integer> xCords = new ArrayList<Integer>();
-    	ArrayList<Integer> yCords = new ArrayList<Integer>();
-    	
-    	for(int i=0; i<overlay.size(); i++) {
-    		GeoPoint point1 = overlay.getItem(i).getPoint();
-    		xCords.add(point1.getLatitudeE6());
-    		yCords.add(point1.getLongitudeE6());
+    	String username = leaderText.getText().toString();
+
+		//Log.e("length1", ""+username.length());
+		
+    	if((group.length() > 0) && (username.length() > 0)){
+    		ManagedOverlay overlay = overlayManager.getOverlay(0);
+    		ArrayList<Integer> xCords = new ArrayList<Integer>();
+    		ArrayList<Integer> yCords = new ArrayList<Integer>();
+
+    		for(int i=0; i<overlay.size(); i++) {
+    			GeoPoint point1 = overlay.getItem(i).getPoint();
+    			xCords.add(point1.getLatitudeE6());
+    			yCords.add(point1.getLongitudeE6());
+    		}
+    		/*intent.putExtra("xCords", xCords);
+    		intent.putExtra("yCords", yCords);
+    		startActivity(intent);
+
+			Bundle data = getIntent().getExtras();
+			String group = data.getString("groupName");*/
+    		values = new ArrayList<GameInfo>();
+    		String url = "";
+    		for(int i=0; i<xCords.size(); i++) {
+    			url = webserviceURL + "add2/" + group + "/" + yCords.get(i) + "/" + xCords.get(i);
+    			new GetStatusesTask().execute(url,"false");
+    		}
+
+        	Intent intent = new Intent(this, GameActivity.class);
+    		intent.putExtra("groupName", group);
+    		intent.putExtra("username", username);
+    		
+    		startActivity(intent);
+    		/*MapView mapView = (MapView) findViewById(R.id.mapview2);
+    		mapView.setBuiltInZoomControls(true);
+    		mapView.setSatellite(true);
+
+    		overlayManager = new OverlayManager(this, mapView);
+
+    		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_action_locate);
+    		ManagedOverlay.boundToCenter(drawable);
+
+    		overlayManager.createOverlay(drawable);*/
     	}
-    	/*intent.putExtra("xCords", xCords);
-    	intent.putExtra("yCords", yCords);
-    	startActivity(intent);
-    	
-		Bundle data = getIntent().getExtras();
-		String group = data.getString("groupName");*/
-		values = new ArrayList<GameInfo>();
-		String url = "";
-		for(int i=0; i<xCords.size(); i++) {
-			url = webserviceURL + "add2/" + group + "/" + yCords.get(i) + "/" + xCords.get(i);
-//			if(i != (xCords.size() - 1)) {
-//				new GetStatusesTask().execute(url,"false");
-//			} else {
-//				new GetStatusesTask().execute(url,"true");
-//			}
-			new GetStatusesTask().execute(url,"false");
-		}
-		
-		startActivity(intent);
-		
-//		MapView mapView = (MapView) findViewById(R.id.mapview2);
-//		mapView.setBuiltInZoomControls(true);
-//		mapView.setSatellite(true);
-//
-//		overlayManager = new OverlayManager(this, mapView);
-//
-//		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_action_locate);
-//		ManagedOverlay.boundToCenter(drawable);
-				
-//		overlayManager.createOverlay(drawable);
+    	else{
+    		String m = "Please enter a username and group";
+    		Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
+    	}
     }
     
     @Override

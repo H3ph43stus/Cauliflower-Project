@@ -31,7 +31,24 @@ public class GameInstance {
 	Date olderDate;
 	long time;
 	int monsterX = 0, monsterY = 0;
+	int curX = 0, curY = 0;
 	
+	public int getCurX() {
+		return curX;
+	}
+
+	public void setCurX(int curX) {
+		this.curX = curX;
+	}
+
+	public int getCurY() {
+		return curY;
+	}
+
+	public void setCurY(int curY) {
+		this.curY = curY;
+	}
+
 	MonsterThread monster = new MonsterThread(this);
 	
 	public GameInstance(String groupName, String username) {
@@ -44,7 +61,9 @@ public class GameInstance {
 		time = 0;
 		monsterX = 0;
 		monsterY = 0;
-		
+	}
+	
+	public void startMonster(){
 		monster.start();
 	}
 	
@@ -194,14 +213,37 @@ public class GameInstance {
 		this.monsterY = monsterY;
 	}
 	
+	public int getScore(){
+		return this.score;
+	}
+	
 	private class MonsterThread extends Thread{
 		GameInstance game;
+		float rate = (float) 0.8;
+		int delay = 10000;
+		
 		MonsterThread(GameInstance game){
 			this.game = game;
 		}
 		
 		public void run(){
+			int mX = game.getMonsterX();
+			int mY = game.getMonsterY();
+			int cX = game.getCurX();
+			int cY = game.getCurY();
 			
+			int xdif = mX - cX;
+			int ydif = mY - cY;
+			
+			game.setMonsterX((int) (cX + rate*xdif));
+			game.setMonsterY((int) (cY + rate*ydif));
+			
+			try {
+				Thread.sleep(delay / game.getScore());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				Log.e("error",e.getMessage());
+			}
 		}
 	}
 }

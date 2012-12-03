@@ -82,26 +82,20 @@ public class MainActivity extends Activity {
 	}
 
 	public void startGame(View view){
-//		Intent intent = new Intent(this, TwitterTestActivity.class);
-//		EditText groupText = (EditText) findViewById(R.id.groupText);
-//		EditText userText = (EditText) findViewById(R.id.userText);
-//		String group = groupText.getText().toString();
-//		String username = userText.getText().toString();
-//		if((group.length() > 0) && (username.length() > 0)){
-//			intent.putExtra("group", group);
-//			intent.putExtra("username", username);
-//			startActivity(intent);
-//		}
-//		else{
-//			String m = "Please enter a username and group";
-//			Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
-//		}
 		Intent intent = new Intent(this, GameActivity.class);
-    	EditText groupText = (EditText) findViewById(R.id.groupText);
-    	EditText userText = (EditText) findViewById(R.id.userText);
-    	intent.putExtra("groupName", groupText.getText().toString());
-    	intent.putExtra("username", userText.getText().toString());
-		startActivity(intent);
+		EditText groupText = (EditText) findViewById(R.id.groupText);
+		EditText userText = (EditText) findViewById(R.id.userText);
+		String group = groupText.getText().toString();
+		String username = userText.getText().toString();
+		if((group.length() > 0) && (username.length() > 0)){
+			intent.putExtra("groupName", group);
+			intent.putExtra("username", username);
+			startActivity(intent);
+		}
+		else{
+			String m = "Please enter a username and group";
+			Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	public static String getJSONfromURL(String url) {
