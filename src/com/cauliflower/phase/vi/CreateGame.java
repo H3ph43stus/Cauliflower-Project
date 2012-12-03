@@ -138,16 +138,6 @@ public class CreateGame extends MapActivity {
     		intent.putExtra("username", username);
     		
     		startActivity(intent);
-    		/*MapView mapView = (MapView) findViewById(R.id.mapview2);
-    		mapView.setBuiltInZoomControls(true);
-    		mapView.setSatellite(true);
-
-    		overlayManager = new OverlayManager(this, mapView);
-
-    		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_action_locate);
-    		ManagedOverlay.boundToCenter(drawable);
-
-    		overlayManager.createOverlay(drawable);*/
     	}
     	else{
     		String m = "Please enter a username and group";

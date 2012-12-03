@@ -4,6 +4,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,13 +22,15 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	private Square itemSquare;		// the square
 	private Square monsterSquare;
 	private Context context;
+	private GameActivity activity;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private float values[] = new float[3];
 	private float ydeg = -80;
 	private float xdifmax = 20;
 	private float ydifmax = 10;
-	float alpha = (float) 0.9;
+	private float alpha = (float) 0.9;
+	private float minDist = 100;
 
 	int D2mD = 1000000;
 	int currentX = 0;
@@ -49,6 +52,8 @@ public class GlRenderer implements Renderer,SensorEventListener {
 			// TODO Auto-generated method stub
 			currentX = (int)(arg0.getLongitude() * D2mD);
 			currentY = (int)(arg0.getLatitude() * D2mD);
+			game.setCurX(currentX);
+			game.setCurY(currentY);
 		}
 
 		public void onProviderDisabled(String provider) {
@@ -69,11 +74,12 @@ public class GlRenderer implements Renderer,SensorEventListener {
 	};
 
 
-	/** Constructor to set the handed over context */
+	/** Constructor to set the handed over context 
+	 * @param gameActivity */
 	@SuppressWarnings("deprecation")
-	public GlRenderer(Context context, GameInstance game) {
+	public GlRenderer(Context context, GameInstance game, GameActivity gameActivity) {
 		this.context = context;
-
+		this.activity = gameActivity;
 		// initialise the square
 		this.itemSquare = new Square(R.drawable.burr);
 		this.monsterSquare = new Square(R.drawable.slendie);
@@ -107,6 +113,8 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		}
 		else{
 			for(int i = 0; i < xvals.length; i++){
+				if(game.isFound(i))
+					break;
 				float longdif = xvals[i] - currentX;
 				float latdif = yvals[i] - currentY;
 				float deg = (float) Math.toDegrees(Math.atan(latdif/longdif));
@@ -117,6 +125,15 @@ public class GlRenderer implements Renderer,SensorEventListener {
 					deg = 270 - deg;
 				}
 				float mDist = (float) Math.sqrt(longdif*longdif + latdif*latdif);
+				if(mDist < minDist){
+					Log.d("score","player scored");
+					if(game.pointFound(i)){
+						//won
+						game.hasDied();
+						game.stopMonster();
+						activity.end(game.username + " from group " + game.groupName + " has won the game");
+					}
+				}
 //				Log.d("location",i + " Deg: " + deg + " dist: " + mDist);
 //				Log.d("dif","longdif " + i + ": " + longdif + " latdif: " + latdif);
 
@@ -125,10 +142,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 				float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
 				float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
 				float zscale = 100/mDist;//-(mDist*mDist)/2000;
-				Log.d("draw","Draw at: " + xscale + " " + yscale);
-				//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
-				//			return;
-				// Drawing
+				
 				gl.glTranslatef(xscale, yscale, -5);		
 				gl.glScalef(zscale, zscale, zscale);			
 				itemSquare.draw(gl);
@@ -147,7 +161,17 @@ public class GlRenderer implements Renderer,SensorEventListener {
 			deg = 270 - deg;
 		}
 		float mDist = (float) Math.sqrt(longdif*longdif + latdif*latdif);
-//		Log.d("location",i + " Deg: " + deg + " dist: " + mDist);
+		if(mDist < minDist){
+			//dead
+			if(game.isDead){
+				return;
+			}
+			Log.d("died","player died");
+			game.hasDied();
+			game.stopMonster();
+			activity.end(game.username + " from group " + game.groupName + " has been killed");
+		}
+//		Log.d("location","Deg: " + deg + " dist: " + mDist);
 //		Log.d("dif","longdif " + i + ": " + longdif + " latdif: " + latdif);
 
 		float xdif = deg - values[0];
@@ -155,7 +179,7 @@ public class GlRenderer implements Renderer,SensorEventListener {
 		float xscale = ((xdif + xdifmax) / (2 * xdifmax)) * 6 - 3;
 		float yscale = -(((ydif + ydifmax) / (2 * ydifmax)) * 4 - 2);
 		float zscale = 300/mDist;//-(mDist*mDist)/2000;
-		Log.d("draw","Draw at: " + xscale + " " + yscale);
+//		Log.d("draw","Draw at: " + xscale + " " + yscale);
 		//		if(Math.abs(xdif) > xdifmax || Math.abs(ydif) > ydifmax)
 		//			return;
 		// Drawing

@@ -8,6 +8,7 @@ import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup.LayoutParams;
@@ -22,7 +23,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 	
 	private GeoPoint monsterLoc = new GeoPoint(-78498878,38040464);
 	private int monsterX = -78498800;
-	private int monsterY = 38040420;
+	private int monsterY =  38040420;
 	
 	private GameInstance game;
 
@@ -36,6 +37,9 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		String group = data.getString("groupName");
 		game = new GameInstance(group,username);
 		game.update();
+		game.setMonsterX(monsterX);
+		game.setMonsterY(monsterY);
+		
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -44,7 +48,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mSurfaceView = new SurfaceView(this);
 		addContentView(mSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
-		mGLSurfaceView = new PictureSurfaceView(this, game); 
+		mGLSurfaceView = new PictureSurfaceView(this, game, this); 
 		addContentView(mGLSurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		
 //		setContentView(R.layout.activity_main);
@@ -55,6 +59,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mSurfaceHolder.addCallback(this);
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT); 
+		game.startMonster();
 	}
 
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
@@ -79,5 +84,11 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback{
 		mGLSurfaceView.r.onClose();
 		camera.stopPreview();
 		camera.release();
+	}
+
+	public void end(String string) {
+		Intent intent = new Intent(this, TwitterTestActivity.class);
+		intent.putExtra("message",string);
+		startActivity(intent);
 	}
 }

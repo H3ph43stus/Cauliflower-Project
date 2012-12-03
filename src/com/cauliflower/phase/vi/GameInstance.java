@@ -32,7 +32,8 @@ public class GameInstance {
 	long time;
 	int monsterX = 0, monsterY = 0;
 	int curX = 0, curY = 0;
-	
+	boolean found[]; 
+
 	public int getCurX() {
 		return curX;
 	}
@@ -49,8 +50,8 @@ public class GameInstance {
 		this.curY = curY;
 	}
 
-	MonsterThread monster = new MonsterThread(this);
-	
+	MonsterThread monster;
+
 	public GameInstance(String groupName, String username) {
 		this.groupName = groupName;
 		this.username = username;
@@ -61,51 +62,59 @@ public class GameInstance {
 		time = 0;
 		monsterX = 0;
 		monsterY = 0;
+		monster = new MonsterThread(this);
 	}
-	
+
 	public void startMonster(){
 		monster.start();
+		Log.d("monster","thread started");
 	}
-	
+
 	public void update() {
 		String url = webserviceURL + "view/" + groupName;
 		new GetStatusesTask().execute(url,"true");
 	}
-	
+
 	public float[] loadXValues() {
 		float[] myValues = ((GameInfo) values.get(0)).getxLocations();
 		return myValues;
 	}
-	
+
 	public float[] loadYValues() {
 		float[] myValues = ((GameInfo) values.get(0)).getyLocations();
 		return myValues;
 	}
-	
-	public void pointFound() {
+
+	public boolean pointFound(int i) {
 		score++;
+		found[i] = true;
 		String url = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/update/"
 				+groupName+"/"+username+"/"+score+"/1";
 		new GetStatusesTask().execute(url,"false");
+		return score == found.length;
 	}
-	
+
+	public boolean isFound(int i){
+		return found[i];
+	}
+
 	public void calcTime() {
 		Date newerDate = new Date();
 		time = (newerDate.getTime() - olderDate.getTime()) 
-                / (1000);// * 60 * 60 * 24)
+				/ (1000);// * 60 * 60 * 24)
 	}
-	
+
 	public void hasDied() {
 		isDead = true;
 		String url = "http://plato.cs.virginia.edu/~tsc8cm/cakephp/statuses/update/"
 				+groupName+"/"+username+"/"+score+"/0";
 		new GetStatusesTask().execute(url,"false");
 	}
-	
+
 	public boolean isReady() {
 		return hasValues;
 	}
-	
+
 	private class GetStatusesTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected void onPreExecute() {
@@ -121,7 +130,7 @@ public class GameInstance {
 
 				Log.d("URL",url);
 				String webJSON = getJSONfromURL(url);
-				Log.d("JSON", webJSON);
+				//				Log.d("JSON", webJSON);
 				if(update.equals("true")){
 					Gson gson = new Gson();
 
@@ -132,15 +141,20 @@ public class GameInstance {
 						GameInfo st = gson.fromJson(obj, GameInfo.class);
 						lcs.add(st);
 					}
+
+					values.clear();
+					values.addAll(lcs);
+					hasValues=true;
+					found = new boolean[lcs.get(0).xLocations.length];
+					for(int i = 0; i < found.length; i++){
+						found[i] = false;
+					}
 				}
 
 			} catch (Exception e) {
 				Log.e("Cauliflower", "JSONPARSE:" + e.toString());
 			}
 
-			values.clear();
-			values.addAll(lcs);
-			hasValues=true;
 			return "Done!";
 		}
 
@@ -212,38 +226,53 @@ public class GameInstance {
 	public void setMonsterY(int monsterY) {
 		this.monsterY = monsterY;
 	}
-	
+
 	public int getScore(){
 		return this.score;
 	}
-	
+
 	private class MonsterThread extends Thread{
 		GameInstance game;
-		float rate = (float) 0.8;
-		int delay = 10000;
-		
+		float rate = (float) 0.5;
+		int delay = 1000;
+		boolean _run = false;
+
 		MonsterThread(GameInstance game){
 			this.game = game;
+			Log.d("monster","thread created");
 		}
-		
+
 		public void run(){
-			int mX = game.getMonsterX();
-			int mY = game.getMonsterY();
-			int cX = game.getCurX();
-			int cY = game.getCurY();
-			
-			int xdif = mX - cX;
-			int ydif = mY - cY;
-			
-			game.setMonsterX((int) (cX + rate*xdif));
-			game.setMonsterY((int) (cY + rate*ydif));
-			
-			try {
-				Thread.sleep(delay / game.getScore());
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				Log.e("error",e.getMessage());
+			_run = true;
+			while(_run){
+				int mX = game.getMonsterX();
+				int mY = game.getMonsterY();
+				int cX = game.getCurX();
+				int cY = game.getCurY();
+
+				int xdif = mX - cX;
+				int ydif = mY - cY;
+
+				game.setMonsterX((int) (cX + rate*xdif));
+				game.setMonsterY((int) (cY + rate*ydif));
+				Log.d("monster","Player at moved: " + cX + "," + (cY));
+				Log.d("monster","monster moved: " + (int)(cX + rate*xdif) + "," + (int)(cY + rate*ydif));
+				try {
+					Thread.sleep(delay / (game.getScore() + 1));
+				} catch (InterruptedException e) {
+					Log.e("error",e.getMessage());
+				}
 			}
 		}
+	}
+
+	public void stopMonster() {
+		//		try {
+		monster._run = false;
+		//			monster.join();
+		//		} catch (InterruptedException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 }

@@ -28,7 +28,7 @@ public class TwitterTestActivity extends Activity {
 	private static final String accessToken = "962772151-kH1NzYU552TiOeoC4bpdpXMHDJdIT9FKz1sQr7rs";
 	private static final String accessTokenSecret = "SQDW4atAYJn4tess1jI8jNVh7kyZfbRkRaQuOE";
 	Twitter twitter;
-	private String group,username;
+	private String group,username,message;
 
 
 	@Override
@@ -37,9 +37,9 @@ public class TwitterTestActivity extends Activity {
 		setContentView(R.layout.twitter_test);
 
 		Bundle data = getIntent().getExtras();
-		group = data.getString("group");
-		username = data.getString("username");
-
+		//group = data.getString("group");
+		//		username = data.getString("username");
+		message = data.getString("message");
 		initView();
 	}
 
@@ -53,21 +53,22 @@ public class TwitterTestActivity extends Activity {
 		// Assign adapter to ListView
 		tweetList.setAdapter(adapter);
 
-				twitter = new TwitterFactory().getInstance();
-				twitter.setOAuthConsumer(consumerKey, consumerSecret);
-				AccessToken a = new AccessToken(accessToken,accessTokenSecret);
-				twitter.setOAuthAccessToken(a);
+		twitter = new TwitterFactory().getInstance();
+		twitter.setOAuthConsumer(consumerKey, consumerSecret);
+		AccessToken a = new AccessToken(accessToken,accessTokenSecret);
+		twitter.setOAuthAccessToken(a);
 
-		new GetStatusesTask().execute("");
+		new GetStatusesTask().execute(message);
+		Log.d("twitter","getting twitter");
 	}
 
-	public void tweetWin(View view){
-		new GetStatusesTask().execute(username + " from group " + group + " has won the game");
-	}
-
-	public void tweetDeath(View view){
-		new GetStatusesTask().execute(username + " from group " + group + " was killed by the monster");
-	}
+	//	public void tweetWin(View view){
+	//		new GetStatusesTask().execute(username + " from group " + group + " has won the game");
+	//	}
+	//
+	//	public void tweetDeath(View view){
+	//		new GetStatusesTask().execute(username + " from group " + group + " was killed by the monster");
+	//	}
 
 
 	@Override
@@ -103,6 +104,7 @@ public class TwitterTestActivity extends Activity {
 					twitter.updateStatus(message);
 					values.add(message + " at " + new Date());
 				}
+				Log.d("twitter","getting tweets");
 				List<twitter4j.Status> statuses = twitter.getHomeTimeline();
 				for (twitter4j.Status status : statuses) {
 					//Log.d("Cauliflower",status.getUser().getName() + ":" + status.getText());

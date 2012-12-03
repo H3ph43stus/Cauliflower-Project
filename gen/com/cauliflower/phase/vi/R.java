@@ -41,9 +41,8 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f070000;
+        public static final int LinearLayout2=0x7f07000e;
         public static final int createButton=0x7f070003;
-        public static final int fakeDeathButton=0x7f07000e;
-        public static final int fakeWinButton=0x7f07000f;
         public static final int groupText=0x7f070008;
         public static final int joinButton=0x7f07000a;
         public static final int layout1=0x7f070005;
@@ -58,6 +57,7 @@ public final class R {
         public static final int refreshTweets=0x7f070013;
         public static final int startButton=0x7f07000b;
         public static final int surfaceView1=0x7f070006;
+        public static final int textView1=0x7f07000f;
         public static final int tweetListView=0x7f070010;
         public static final int userText=0x7f070009;
     }
