@@ -169,11 +169,6 @@ public class GameInstance {
 		}
 	}
 
-	/*@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}*/
-
 	public static String getJSONfromURL(String url) {
 
 		// initialize
@@ -233,8 +228,8 @@ public class GameInstance {
 
 	private class MonsterThread extends Thread{
 		GameInstance game;
-		float rate = (float) 0.5;
-		int delay = 1000;
+		float rate = (float) 0.8;
+		int delay = 6000;
 		boolean _run = false;
 
 		MonsterThread(GameInstance game){
@@ -243,36 +238,40 @@ public class GameInstance {
 		}
 
 		public void run(){
+			Log.d("monster","started");
 			_run = true;
 			while(_run){
 				int mX = game.getMonsterX();
 				int mY = game.getMonsterY();
 				int cX = game.getCurX();
 				int cY = game.getCurY();
+				if(cX == 0 || cY == 0){
+					Log.w("location","no data");
+					continue;
+				}
 
 				int xdif = mX - cX;
 				int ydif = mY - cY;
-
-				game.setMonsterX((int) (cX + rate*xdif));
-				game.setMonsterY((int) (cY + rate*ydif));
-				Log.d("monster","Player at moved: " + cX + "," + (cY));
-				Log.d("monster","monster moved: " + (int)(cX + rate*xdif) + "," + (int)(cY + rate*ydif));
+				
+				int nX = mX, nY = mY;
+				nX = (int) (cX + rate*xdif);
+				nY = (int) (cY + rate*ydif);
+				game.setMonsterX(nX);
+				game.setMonsterY(nY);
+//				Log.d("monster","Player at: " + cX + "," + (cY));
+				Log.d("monster","monster moved: " + nX + "," + nY + " " + xdif + "," + ydif);
 				try {
 					Thread.sleep(delay / (game.getScore() + 1));
 				} catch (InterruptedException e) {
 					Log.e("error",e.getMessage());
 				}
 			}
+			Log.w("monster","Thread ending");
 		}
 	}
 
 	public void stopMonster() {
-		//		try {
+		Log.d("monster","monster stopped");
 		monster._run = false;
-		//			monster.join();
-		//		} catch (InterruptedException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
 	}
 }

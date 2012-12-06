@@ -10,7 +10,7 @@ public class PlayerStatus {
 	public String time_finished;
 	
 	public String toString(){
-		return "Username: " + username + "\t\tPages: " + pages_found + "\t\tAlive: " + alive + "\t\tKey: " + key;
+		return "Player: " + username + "\n\tPages found: " + pages_found + "\t\tAlive: " + alive;
 	}
 	
 	public String[] getStatus() {

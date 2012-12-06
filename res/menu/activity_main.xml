@@ -1,4 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/createButton" android:title="@string/create"></item>
+    <item android:id="@+id/createButton" android:title="@string/create" android:showAsAction="ifRoom|withText" android:icon="@drawable/ic_action_edit"></item>
     <item android:id="@+id/refreshButton" android:title="@string/refresh" android:icon="@drawable/ic_action_refresh" android:showAsAction="ifRoom|withText"></item>
 </menu>

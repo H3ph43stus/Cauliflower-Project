@@ -65,9 +65,9 @@ public class MainActivity extends Activity {
 	}
 
 	public void refreshGroup(){
-		if(group == null)
-			this.group = ((EditText) findViewById(R.id.groupText)).getText().toString();
-		new GetStatusesTask().execute(webserviceURL + "view/" + this.group, "true");
+		String group = ((EditText) findViewById(R.id.groupText)).getText().toString();
+		if(group != "")
+			new GetStatusesTask().execute(webserviceURL + "view/" + this.group, "true");
 	}
 
 	public void joinGroup(View view){
@@ -77,23 +77,27 @@ public class MainActivity extends Activity {
 		this.username = usernameText.getText().toString();
 		String url = webserviceURL + "add/" + groupText.getText() + "/" + usernameText.getText();
 		//((TextView) findViewById(R.id.debug)).setText(url);
+		if((group.length() > 0) && (username.length() > 0)){}
+		else{
+			String m = "Please enter a username and group";
+			Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
+			this.group = null;
+			this.username = null;
+			return;
+		}
 		new GetStatusesTask().execute(url,"false");
 		new GetStatusesTask().execute(webserviceURL + "view/" + this.group, "true");
 	}
 
 	public void startGame(View view){
 		Intent intent = new Intent(this, GameActivity.class);
-		EditText groupText = (EditText) findViewById(R.id.groupText);
-		EditText userText = (EditText) findViewById(R.id.userText);
-		String group = groupText.getText().toString();
-		String username = userText.getText().toString();
-		if((group.length() > 0) && (username.length() > 0)){
+		if(group != null && username != null){
 			intent.putExtra("groupName", group);
 			intent.putExtra("username", username);
 			startActivity(intent);
 		}
 		else{
-			String m = "Please enter a username and group";
+			String m = "Please join a group";
 			Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
 		}
 	}

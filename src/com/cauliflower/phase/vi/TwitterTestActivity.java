@@ -14,21 +14,21 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TwitterTestActivity extends Activity {
-	ListView tweetList;
-	ArrayList<String> values;
-	ArrayAdapter<String> adapter;
+	private ListView tweetList;
+	private ArrayList<String> values;
+	private ArrayAdapter<String> adapter;
 	private static final String consumerKey = "SMD41Ddj8MdupIPTV3kBfA";
 	private static final String consumerSecret = "kjEZiCSaIMRIg1ixCiT7KdtIB5yRD8w1eAdzGeaik";
 	private static final String accessToken = "962772151-kH1NzYU552TiOeoC4bpdpXMHDJdIT9FKz1sQr7rs";
 	private static final String accessTokenSecret = "SQDW4atAYJn4tess1jI8jNVh7kyZfbRkRaQuOE";
-	Twitter twitter;
-	private String group,username,message;
+	private Twitter twitter;
+	private String message,endText;
 
 
 	@Override
@@ -39,7 +39,10 @@ public class TwitterTestActivity extends Activity {
 		Bundle data = getIntent().getExtras();
 		//group = data.getString("group");
 		//		username = data.getString("username");
+		
 		message = data.getString("message");
+		endText = data.getString("endtext");
+		((TextView)findViewById(R.id.textView1)).setText("Game Over - " + endText);
 		initView();
 	}
 
@@ -61,15 +64,6 @@ public class TwitterTestActivity extends Activity {
 		new GetStatusesTask().execute(message);
 		Log.d("twitter","getting twitter");
 	}
-
-	//	public void tweetWin(View view){
-	//		new GetStatusesTask().execute(username + " from group " + group + " has won the game");
-	//	}
-	//
-	//	public void tweetDeath(View view){
-	//		new GetStatusesTask().execute(username + " from group " + group + " was killed by the monster");
-	//	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

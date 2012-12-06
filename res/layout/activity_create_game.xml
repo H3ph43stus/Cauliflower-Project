@@ -18,12 +18,18 @@
 
             <requestFocus />
         </EditText>
-
+
         <EditText
             android:id="@+id/leaderText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username" />
+            android:hint="Your Nickname" />
+
+        <TextView
+            android:id="@+id/createHelpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/createHelpText" />
 
         <Space
             android:layout_width="match_parent"
